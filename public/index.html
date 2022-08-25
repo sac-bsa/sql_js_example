@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>This is a SQL server test page</title>
+  </head>
+  <body>
+    <div>
+      Activity <input type="text" id="activity" /><br />
+      Date <input type="number" id="date" /><br />
+      Amount <input type="number" id="amount" /><br />
+      <button type="button" id="set">Insert</button><br />
+      <button type="button" id="get">Get one of this activity</button><br />
+      <button type="button" id="all">Get all of this activity</button>
+      <p id="data"></p>
+      RowIdNum <input type="number" id="rowIdNum" /><br />
+      <button type="button" id="delete">Delete this row</button>
+    </div>
+  </body>
+  <script>
+    const activitybox = document.getElementById("activity");
+    const datebox = document.getElementById("date");
+    const amountbox = document.getElementById("amount");
+    const setbutton = document.getElementById("set");
+    const getbutton = document.getElementById("get");
+    const allbutton = document.getElementById("all");
+    const databox = document.getElementById("data");
+    const idbox = document.getElementById("rowIdNum");
+    const deletebutton = document.getElementById("delete");
+
+    setbutton.addEventListener("click", () => {
+      databox.textContent = "";
+      const xhr = new XMLHttpRequest();
+      const data = { activity: activitybox.value, date: datebox.value, amount: amountbox.value};
+      const datastr = JSON.stringify(data);
+      console.log(datastr);
+      xhr.open("POST", "/addactivity", true);
+      xhr.setRequestHeader("Content-Type", "application/json");
+      xhr.send(datastr);
+    });
+
+    getbutton.addEventListener("click", () => {
+      databox.textContent = "";
+      const xhr = new XMLHttpRequest();
+      xhr.open("GET", "/getactivity?activity=" + activitybox.value, true);
+      xhr.onreadystatechange = () => {
+        const data = JSON.parse(xhr.responseText);
+        datebox.value = data.date;
+        amountbox.value = data.amount;
+      };
+      xhr.send();
+    });
+
+    allbutton.addEventListener("click", () => {
+      databox.textContent = "";
+      const xhr = new XMLHttpRequest();
+      xhr.open("GET", "/getallactivities?activity=" + activitybox.value, true);
+      xhr.onreadystatechange = () => {
+        databox.textContent = xhr.responseText;
+      };
+      xhr.send();
+    });
+
+    deletebutton.addEventListener("click", () => {
+      databox.textContent = "";
+      const xhr = new XMLHttpRequest();
+      const data = {rowIdNum: idbox.value};
+      const datastr = JSON.stringify(data);
+      xhr.open("POST", "/deleteactivity", true);
+      xhr.setRequestHeader("Content-Type", "application/json");
+      xhr.send(datastr);
+    });
+  </script>
+</html>

@@ -1,0 +1,7 @@
+
+# Any SQLite3 databases should not be tracked in git.
+*.db
+
+# Dependency directories
+node_modules/
+
